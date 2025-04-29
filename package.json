@@ -1,0 +1,20 @@
+{
+  "name": "domino-manauara",
+  "version": "1.0.0",
+  "description": "Jogo de dominó multiplayer online com regras de Manaus",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "express": "^4.17.3",
+    "socket.io": "^4.7.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=16.x"
+  }
+}
