@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dominó Manauara</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #2c8a43; /* Verde amazonas */
+            color: white;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        h1 {
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            margin-bottom: 30px;
+        }
+        
+        .game-container {
+            background-color: #1e6e33;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            width: 90%;
+            max-width: 1000px;
+            text-align: center;
+        }
+        
+        .lobby-container {
+            background-color: #1e6e33;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .player-area {
+            margin: 20px 0;
+        }
+        
+        .board {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            min-height: 150px;
+            background-color: #18592a;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .domino {
+            width: 80px;
+            height: 40px;
+            background-color: #eee;
+            border-radius: 5px;
+            margin: 5px;
+            display: flex;
+            color: black;
+            cursor: pointer;
+            box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s;
+        }
+        
+        .domino:hover {
+            transform: translateY(-5px);
+        }
+        
+        .domino.vertical {
+            width: 40px;
+            height: 80px;
+            flex-direction: column;
+        }
+        
+        .domino-half {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 50%;
+            height: 100%;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .domino.vertical .domino-half {
+            width: 100%;
+            height: 50%;
+        }
+        
+        .domino-half:first-child {
+            border-right: 1px solid #999;
+        }
+        
+        .domino.vertical .domino-half:first-child {
+            border-right: none;
+            border-bottom: 1px solid #999;
+        }
+        
+        .player-hand {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .controls {
+            margin: 20px 0;
+        }
+        
+        button {
+            background-color: #f39c12;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            margin: 0 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+        
+        button:hover {
+            background-color: #e67e22;
+        }
+        
+        button:disabled {
+            background-color: #7f8c8d;
+            cursor: not-allowed;
+        }
+        
+        .score-board {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .player-score {
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 10px 15px;
+            border-radius: 5px;
+            min-width: 100px;
+            margin: 5px;
+        }
+        
+        .active-player {
+            background-color: #f39c12;
+        }
+        
+        .prediction-input {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 15px 0;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+        
+        .prediction-input label {
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .prediction-input input {
+            width: 50px;
+            padding: 5px;
+            border-radius: 5px;
+            border: none;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .galo-option {
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .galo-option input {
+            margin-right: 10px;
+        }
+        
+        .galo-option label {
+            color: #f1c40f;
+            font-weight: bold;
+        }
+        
+        .message-area {
+            min-height: 50px;
+            margin: 15px 0;
+            font-weight: bold;
+            color: #f1c40f;
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 5px;
+        }
+        
+        .special-event {
+            animation: pulse 1s infinite;
+        }
+        
+        .player-list {
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 10px;
+            margin: 20px 0;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .player-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .player-item:last-child {
+            border-bottom: none;
+        }
+        
+        .player-ready {
+            color: #2ecc71;
+        }
+        
+        .player-not-ready {
+            color: #e74c3c;
+        }
+        
+        .room-id {
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-size: 24px;
+        }
+        
+        input[type="text"] {
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            margin: 5px;
+            width: 200px;
+        }
+        
+        .screen {
+            display: none;
+        }
+        
+        .screen.active {
+            display: block;
+        }
+        
+        .team-indicator {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 10px;
+        }
+        
+        .team-0 {
+            background-color: #2980b9;
+        }
+        
+        .team-1 {
+            background-color: #c0392b;
+        }
+        
+        .team-score {
+            font-size: 18px;
+            font-weight: bold;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 10px 20px;
+            margin: 10px 0;
+            border-radius: 5px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <h1>🎲 Dominó Manauara 🎲</h1>
+    
+    <!-- Tela Inicial -->
+    <div id="welcome-screen" class="lobby-container screen active">
+        <h2>Bem-vindo ao Dominó Manauara!</h2>
+        <p>Um jogo de dominó multiplayer com as regras especiais de Manaus.</p>
+        
+        <div class="controls">
+            <input type="text" id="player-name" placeholder="Seu nome">
+            <button id="create-room-btn">Criar Sala</button>
+            <button id="join-room-btn">Entrar em uma Sala</button>
+        </div>
+    </div>
+    
+    <!-- Tela de Entrada em Sala -->
+    <div id="join-room-screen" class="lobby-container screen">
+        <h2>Entrar em uma Sala</h2>
+        
+        <div class="controls">
+            <input type="text" id="room-id-input" placeholder="Código da sala">
+            <button id="confirm-join-btn">Entrar</button>
+            <button id="back-to-welcome-btn">Voltar</button>
+        </div>
+    </div>
+    
+    <!-- Tela de Lobby (Sala de Espera) -->
+    <div id="lobby-screen" class="lobby-container screen">
+        <h2>Sala de Espera</h2>
+        
+        <div class="room-id">Código da sala: <span id="room-id-display"></span></div>
+        <p>Compartilhe este código com seus amigos para que eles possam se juntar à sala.</p>
+        
+        <div class="player-list" id="player-list">
+            <!-- Lista de jogadores será preenchida dinamicamente -->
+        </div>
+        
+        <div class="controls">
+            <button id="ready-btn">Estou Pronto</button>
+            <button id="leave-room-btn">Sair da Sala</button>
+        </div>
+    </div>
+    
+    <!-- Tela de Jogo -->
+    <div id="game-screen" class="game-container screen">
+        <div class="score-board" id="score-board">
+            <!-- Pontuação dos jogadores será preenchida dinamicamente -->
+        </div>
+        
+        <div class="board" id="game-board">
+            <!-- Peças jogadas aparecerão aqui -->
+        </div>
+        
+        <div class="message-area" id="message">
+            Aguardando início do jogo...
+        </div>
+        
+        <div class="prediction-input" id="prediction-container">
+            <label for="prediction">Quantos pontos vai fazer? (Múltiplos de 5)</label>
+            <input type="number" id="prediction" min="0" max="100" step="5" value="0">
+            
+            <div class="galo-option">
+                <input type="checkbox" id="call-galo">
+                <label for="call-galo">CHAMAR GALO! (Anunciar que vai bloquear todos)</label>
+            </div>
+            
+            <button id="confirm-prediction">Confirmar Previsão</button>
+        </div>
+        
+        <div class="player-area">
+            <h3>Sua mão:</h3>
+            <div class="player-hand" id="player-hand">
+                <!-- Peças do jogador aparecerão aqui -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/game.js"></script>
+</body>
+</html>
